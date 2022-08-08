@@ -57,7 +57,7 @@
 					@image-insert="insertImagePath"
 					@image-upload="uploadImageFiles">
 					<div id="editor-session-list">
-						<div v-tooltip="lastSavedStatusTooltip" class="save-status" :class="lastSavedStatusClass">
+						<div class="save-status" :class="lastSavedStatusClass">
 							{{ lastSavedStatus }}
 						</div>
 						<SessionList :sessions="filteredSessions">
