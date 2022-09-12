@@ -1,5 +1,5 @@
 <template>
-	<Modal size="normal"
+	<Modal id="text-app" size="normal"
 		:title="t('text', 'Formatting help')"
 		@close="$emit('close')">
 		<h2>{{ t('text', 'Formatting help') }}</h2>
