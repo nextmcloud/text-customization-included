@@ -83,7 +83,11 @@
 						<button v-tooltip="getLabelAndKeys(icon)"
 							:class="childIconClasses(icon.children, )"
 							@click.prevent="toggleChildMenu(icon)" />
-						<div :class="{open: isChildMenuVisible(icon)}" class="popovermenu menu-center">
+						<div :class="[
+								isChildMenuVisible(icon) ? 'open' : '',
+								menuAlignClass,
+							]"
+							class="popovermenu">
 							<PopoverMenu :menu="childPopoverMenu(icon.children, icon)" />
 						</div>
 					</div>
@@ -185,6 +189,7 @@ export default {
 			submenuVisibility: {},
 			lastImagePath: null,
 			icons: [...menuBarIcons],
+			editorHasFocus: false
 		}
 	},
 	computed: {
@@ -209,7 +214,7 @@ export default {
 			}
 		},
 		isVisible() {
-			return this.$editor.isFocused
+			return this.editorHasFocus
 				|| Object.values(this.submenuVisibility).find((v) => v)
 		},
 		disabled() {
@@ -263,6 +268,10 @@ export default {
 			return this.lastImagePath
 				|| this.filePath.split('/').slice(0, -1).join('/')
 		},
+		menuAlignClass() {
+			// Align popover menus to the left on mobile (https://github.com/nextcloud/text/issues/2915)
+			return (this.isMobile) ? 'menu-left' : 'menu-center'
+		},
 	},
 	mounted() {
 		window.addEventListener('resize', this.getWindowWidth)
@@ -278,6 +287,14 @@ export default {
 			}
 		}, 100)
 		this.$emit('update:loaded', true)
+
+		this.$editor.on('focus', _ => {
+			this.editorHasFocus = true
+		})
+
+		this.$editor.on('blur', _ => {
+			this.editorHasFocus = false
+		})
 	},
 	beforeDestroy() {
 		window.removeEventListener('resize', this.getWindowWidth)
